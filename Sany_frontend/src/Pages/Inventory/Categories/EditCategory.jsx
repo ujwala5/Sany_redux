@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './AddCategory.css';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { getCategoryByIdReducer } from '../../../features/categories/categorySlice'
+import { getCategoryByIdReducer, updateCategoryById } from '../../../features/categories/categorySlice'
 
 function EditCategory() {
 
@@ -27,22 +27,26 @@ function EditCategory() {
         onSubmit: async (values) => {
             console.log("values==>>", values);
 
-            let res = await fetch(`http://localhost:8991/V2/categories/edit?Categoryid=${categoryId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    Categoryname: values.categoryName,
-                    Categorystatus: 1
+            let catName = values.categoryName;
 
-                }),
-            })
+            // let res = await fetch(`http://localhost:8991/V2/categories/edit?Categoryid=${categoryId}`, {
+            //     method: 'PUT',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({
+            //         Categoryname: values.categoryName,
+            //         Categorystatus: 1
 
-            const res_ = await res.json();
-            console.log(res_);
+            //     }),
+            // })
 
-            if (res_.code == 200) {
+            // const res_ = await res.json();
+            // console.log(res_);
+
+            let res = await dispatch(updateCategoryById({ categoryId, catName })).unwrap();
+
+            if (res.code == 200) {
                 navigate('/showCategories');
             }
         }
@@ -67,14 +71,16 @@ function EditCategory() {
         // console.log("catname==>", catname);
 
         dispatch(getCategoryByIdReducer(id))
-        formik.setFieldValue('categoryName', category_name);
 
     }
 
     useEffect(() => {
         getCategoryById(categoryId);
-    }, [])
+    }, [dispatch, categoryId])
 
+    useEffect(() => {
+        formik.setFieldValue('categoryName', category_name);
+    }, [category_name])
 
 
     return (

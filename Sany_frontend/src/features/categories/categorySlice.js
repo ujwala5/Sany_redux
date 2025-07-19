@@ -15,10 +15,26 @@ export const deleteCategory = createAsyncThunk('category/delCategory', async (ca
     return catId;
 })
 
-export const updateCategoryById = createAsyncThunk('category/updateCategoryById', async (catId) => {
-    const response = await axios.put(`http://localhost:8991/V2/categories/edit?Categoryid=${catId}`);
-    console.log("response ====>>", response.data);
-    return catId;
+export const updateCategoryById = createAsyncThunk('category/updateCategoryById', async ({ catId, catName }) => {
+    try {
+        console.log("updateCategoryById===>>", catId);
+        console.log("updateCategoryById values==>>", JSON.parse(JSON.stringify(catName)));
+        const response = await axios.put(`http://localhost:8991/V2/categories/edit?Categoryid=${catId}`, {
+            header: {
+                'Content-Type': 'application/json',
+            },
+            data: {
+                Categoryname: catName,
+                Categorystatus: 1
+
+            },
+        });
+        console.log("response ====>>", response);
+        return { catId, catName };
+    } catch (err) {
+        console.log("err==>", err.message);
+    }
+
 })
 
 export const categorySlice = createSlice({
@@ -32,11 +48,11 @@ export const categorySlice = createSlice({
     reducers: {
         getCategoryByIdReducer: (state, action) => {
             const id = action.payload;
-            console.log("id==>>", id);
-            console.log("state====>>", JSON.parse(JSON.stringify(state.value)));
+            // console.log("id==>>", id);
+            // console.log("state====>>", JSON.parse(JSON.stringify(state.value)));
 
             const found = state.value.find(item => item.catid == id);
-            console.log("found==>>", found);
+            // console.log("found==>>", found);
             if (found) {
                 state.category_name = found.catname;
             } else {
@@ -79,7 +95,12 @@ export const categorySlice = createSlice({
                 state.error = null;
             })
             .addCase(updateCategoryById.fulfilled, (state, action) => {
-                state.loading = false;
+                const updatedCategory = action.payload;
+                const index = state.value.findIndex(item => item.catid === updatedCategory.catid);
+                if (index !== -1) {
+                    state.value[index] = updatedCategory;
+                }
+
 
             })
             .addCase(updateCategoryById.rejected, (state, action) => {

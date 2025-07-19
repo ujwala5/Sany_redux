@@ -33,7 +33,7 @@ function ShowCategories() {
 
     useEffect(() => {
         dispatch(fetchCategories());
-    }, []);
+    }, [dispatch]);
 
     const handleClick = () => {
         navigate('/addCategory');
