@@ -17,20 +17,22 @@ export const deleteCategory = createAsyncThunk('category/delCategory', async (ca
 
 export const updateCategoryById = createAsyncThunk('category/updateCategoryById', async ({ catId, catName }) => {
     try {
-        console.log("updateCategoryById===>>", catId);
-        console.log("updateCategoryById values==>>", JSON.parse(JSON.stringify(catName)));
+        // console.log("updateCategoryById===>>", catId);
+        // console.log("updateCategoryById values==>>", JSON.parse(JSON.stringify(catName)));
+        let categoryValues = JSON.parse(JSON.stringify(catName));
+        console.log("categoryValues==>>", categoryValues);
         const response = await axios.put(`http://localhost:8991/V2/categories/edit?Categoryid=${catId}`, {
             header: {
                 'Content-Type': 'application/json',
             },
             data: {
-                Categoryname: catName,
+                Categoryname: categoryValues,
                 Categorystatus: 1
 
             },
         });
         console.log("response ====>>", response);
-        return { catId, catName };
+        // return { catId, categoryValues };
     } catch (err) {
         console.log("err==>", err.message);
     }
@@ -95,11 +97,14 @@ export const categorySlice = createSlice({
                 state.error = null;
             })
             .addCase(updateCategoryById.fulfilled, (state, action) => {
-                const updatedCategory = action.payload;
-                const index = state.value.findIndex(item => item.catid === updatedCategory.catid);
-                if (index !== -1) {
-                    state.value[index] = updatedCategory;
-                }
+                console.log("state==>>", state);
+                console.log("action==>>", action);
+
+                // const updatedCategory = action.payload;
+                // const index = state.value.findIndex(item => item.catid === updatedCategory.catid);
+                // if (index !== -1) {
+                //     state.value[index] = updatedCategory;
+                // }
 
 
             })

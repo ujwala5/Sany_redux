@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
+import { fetchDealers } from '../../../features/dealers/dealersSlice.js'
+import { useDispatch, useSelector } from 'react-redux';
 
 function ShowDealers() {
-    const [showDealer, setShowDealer] = useState([]);
+    // const [showDealer, setShowDealer] = useState([]);
+    const { dealers, loading, error } = useSelector(state => state.dealers);
+    console.log("dealers values ===>", dealers)
+
+    const dispatch = useDispatch();
 
     const Navigate = useNavigate();
 
@@ -12,27 +18,28 @@ function ShowDealers() {
     }
 
     const handleEdit = async (dealerId) => {
+        7
         Navigate(`/dealer/edit/${dealerId}`)
     }
 
-    const fetchDealers = async () => {
-        const res = await fetch('http://localhost:8991/V2/showdealers',
-            {
-                Method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+    // const fetchDealers = async () => {
+    //     const res = await fetch('http://localhost:8991/V2/showdealers',
+    //         {
+    //             Method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
 
-            }
-        );
+    //         }
+    //     );
 
-        const result = await res.json();
-        // console.log("result==>", result.data);
+    //     const result = await res.json();
+    //     // console.log("result==>", result.data);
 
-        setShowDealer(result.data)
-    }
+    //     setShowDealer(result.data)
+    // }
     useEffect(() => {
-        fetchDealers();
+        dispatch(fetchDealers());
     }, [])
 
     const delDealer = async (dealerId) => {
@@ -74,7 +81,7 @@ function ShowDealers() {
 
                 </thead>
                 <tbody>
-                    {showDealer.map((item, index) => (
+                    {dealers.map((item, index) => (
                         <tr key={index || item.dealerid}>
                             <td>{index + 1}</td>
                             <td>{item.dealerid}</td>

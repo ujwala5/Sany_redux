@@ -1,31 +1,37 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSubCategories } from '../../../features/subCategory/subCategorySlice';
 
 function ShowSubCategories() {
 
-    const [showSubCategory, setShowSubCategory] = useState([]);
+    // const [showSubCategory, setShowSubCategory] = useState([]);
+
+    const { subCategory, loading, error } = useSelector(state => state.subCategory)
+
+    const dispatch = useDispatch()
     const navigate = useNavigate();
 
     const handleClick = async () => {
         navigate('/subCategory');
     }
 
-    const fetchSubCategories = async () => {
-        const res = await fetch('http://localhost:8991/V2/subcategories', {
-            method: 'GET',
-            headers: {
-                'Content-type': 'application/json',
-            },
-        })
+    // const fetchSubCategories = async () => {
+    //     const res = await fetch('http://localhost:8991/V2/subcategories', {
+    //         method: 'GET',
+    //         headers: {
+    //             'Content-type': 'application/json',
+    //         },
+    //     })
 
-        const result = await res.json();
-        console.log("result ==>", result.data);
-        setShowSubCategory(result.data)
-    }
+    //     const result = await res.json();
+    //     console.log("result ==>", result.data);
+    //     setShowSubCategory(result.data)
+    // }
 
     useEffect(() => {
-        fetchSubCategories();
+        dispatch(fetchSubCategories());
     }, [])
 
     const delSubCategory = async (SubCategoryId) => {
@@ -71,7 +77,7 @@ function ShowSubCategories() {
 
                     </thead>
                     <tbody>
-                        {showSubCategory.map((item, index) => (
+                        {subCategory.map((item, index) => (
                             <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td>{item.catname}</td>

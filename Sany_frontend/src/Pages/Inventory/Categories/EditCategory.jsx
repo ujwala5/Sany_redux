@@ -44,7 +44,7 @@ function EditCategory() {
             // const res_ = await res.json();
             // console.log(res_);
 
-            let res = await dispatch(updateCategoryById({ categoryId, catName })).unwrap();
+            let res = await dispatch(updateCategoryById({ catId: categoryId, catName })).unwrap();
 
             if (res.code == 200) {
                 navigate('/showCategories');
