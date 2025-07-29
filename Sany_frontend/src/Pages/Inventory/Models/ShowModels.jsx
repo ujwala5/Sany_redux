@@ -1,30 +1,36 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify';
+import { deleteModels, fetchModels } from '../../../features/model/modelSlice';
 
 function ShowModels() {
-    const [showModels, setShowModels] = useState([]);
+    // const [showModels, setShowModels] = useState([]);
+
+    const dispatch = useDispatch();
+    const { model, loading, error } = useSelector(state => state.model);
+
     const navigate = useNavigate();
     const handleClick = () => {
         navigate('/addModels');
     }
 
-    const fetchModels = async () => {
-        const res = await fetch('http://localhost:8991/V2/showmodels', {
-            Method: 'GET',
-            headers: {
-                'Content-type': 'application/json',
-            },
-        })
+    // const fetchModels = async () => {
+    //     const res = await fetch('http://localhost:8991/V2/showmodels', {
+    //         Method: 'GET',
+    //         headers: {
+    //             'Content-type': 'application/json',
+    //         },
+    //     })
 
-        const result = await res.json();
-        console.log(result);
+    //     const result = await res.json();
+    //     console.log(result);
 
-        setShowModels(result.data);
-    }
+    //     setShowModels(result.data);
+    // }
 
     useEffect(() => {
-        fetchModels();
+        dispatch(fetchModels());
     }, [])
 
 
@@ -34,18 +40,19 @@ function ShowModels() {
 
     const delModel = async (modelId) => {
         try {
-            const deletemodelApi = await fetch(`http://localhost:8991/V2/models/delete?Modelid=${modelId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
+            // const deletemodelApi = await fetch(`http://localhost:8991/V2/models/delete?Modelid=${modelId}`, {
+            //     method: 'DELETE',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     }
+            // })
+
+            dispatch(deleteModels(modelId));
             toast.success('Model deleted successfully');
             setTimeout(() => {
                 window.location.reload();
             }, 3000);
 
-            console.log("deleteCatApi==>", deletemodelApi);
         } catch (err) {
             toast.error('Something went wrong')
         }
@@ -73,7 +80,7 @@ function ShowModels() {
 
                     </thead>
                     <tbody>
-                        {showModels.map((item, index) => (
+                        {model.map((item, index) => (
                             <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td>{item.modelid}</td>

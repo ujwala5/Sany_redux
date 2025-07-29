@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSubCategories } from '../../../features/subCategory/subCategorySlice';
+import { deleteSubCategories, fetchSubCategories } from '../../../features/subCategory/subCategorySlice';
 
 function ShowSubCategories() {
 
@@ -36,18 +36,14 @@ function ShowSubCategories() {
 
     const delSubCategory = async (SubCategoryId) => {
         try {
-            const deletSubCatlApi = await fetch(`http://localhost:8991/V2/subcategories/delete?SubCategoryid=${SubCategoryId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
+
+            dispatch(deleteSubCategories(SubCategoryId));
             toast.success('Sub category deleted successfully');
             setTimeout(() => {
                 window.location.reload();
             }, 3000);
 
-            console.log("deletSubCatlApi==>", deletSubCatlApi);
+            // console.log("deletSubCatlApi==>", deletSubCatlApi);
         } catch (err) {
             toast.error('Something went wrong')
         }

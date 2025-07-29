@@ -15,6 +15,22 @@ export const deleteCategory = createAsyncThunk('category/delCategory', async (ca
     return catId;
 })
 
+export const addCategory = createAsyncThunk('category/addCategory', async (categoryName) => {
+    console.log("categoryName==>>", categoryName);
+    const response = await axios.post('http://localhost:8991/v2/categories/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.parse({
+            Categoryname: categoryName,
+
+        })
+    })
+    console.log("response from addCategory asyncThnk ===>>", response);
+    return response.data;
+})
+
 export const updateCategoryById = createAsyncThunk('category/updateCategoryById', async ({ catId, catName }) => {
     try {
         // console.log("updateCategoryById===>>", catId);
@@ -91,6 +107,35 @@ export const categorySlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message
             })
+
+            // Add categories
+            .addCase(addCategory.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+
+            .addCase(addCategory.fulfilled, (state, action) => {
+                state.loading = false;
+                // state.value.push(action.payload);
+            })
+            .addCase(addCategory.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             //Update categories
             .addCase(updateCategoryById.pending, (state) => {
