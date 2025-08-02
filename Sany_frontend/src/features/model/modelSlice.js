@@ -13,6 +13,21 @@ export const deleteModels = createAsyncThunk('model/deleteModels', async (modelI
     return modelId;
 })
 
+export const addModels = createAsyncThunk('model/addModels', async (values) => {
+    const response = await axios.post('http://localhost:8991/V2/models/create', {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        Subcatname: values.Subcategory,
+        Modelcode: values.ModelCode,
+        Modeldesc: values.modelDescription,
+        Brochureurl: values.BrochureUrl
+    })
+
+    console.log("response==>", response.data);
+    return response.data;
+})
+
 export const modelSlice = createSlice({
     name: "model",
     initialState: {
@@ -51,6 +66,19 @@ export const modelSlice = createSlice({
                 state.model = state.model.filter((item) => item.modelId !== action.payload)
             })
             .addCase(deleteModels.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+
+            //Add model
+            .addCase(addModels.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(addModels.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(addModels.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

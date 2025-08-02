@@ -17,23 +17,35 @@ export const deleteCategory = createAsyncThunk('category/delCategory', async (ca
 
 export const addCategory = createAsyncThunk('category/addCategory', async (categoryName) => {
     console.log("categoryName==>>", categoryName);
-    const response = await axios.post('http://localhost:8991/v2/categories/create', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.parse({
-            Categoryname: categoryName,
+    // const response = await axios.post('http://localhost:8991/v2/categories/create', {
+    // headers: {
+    //     'Content-Type': 'application/json',
+    // },
+    // body: JSON.parse({
+    //     Categoryname: categoryName,
 
-        })
-    })
+    // })
+    // })
+
+    const response = await axios.post(
+        'http://localhost:8991/v2/categories/create',
+        {
+            Categoryname: categoryName,
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+    );
+
     console.log("response from addCategory asyncThnk ===>>", response);
     return response.data;
 })
 
 export const updateCategoryById = createAsyncThunk('category/updateCategoryById', async ({ catId, catName }) => {
     try {
-        // console.log("updateCategoryById===>>", catId);
+        console.log("updateCategoryById===>>", catId);
         // console.log("updateCategoryById values==>>", JSON.parse(JSON.stringify(catName)));
         let categoryValues = JSON.parse(JSON.stringify(catName));
         console.log("categoryValues==>>", categoryValues);
@@ -41,19 +53,19 @@ export const updateCategoryById = createAsyncThunk('category/updateCategoryById'
             header: {
                 'Content-Type': 'application/json',
             },
-            data: {
-                Categoryname: categoryValues,
-                Categorystatus: 1
 
-            },
+            Categoryname: categoryValues,
+            Categorystatus: 1
+
         });
         console.log("response ====>>", response);
-        // return { catId, categoryValues };
+        return response.data;
     } catch (err) {
         console.log("err==>", err.message);
     }
 
 })
+
 
 export const categorySlice = createSlice({
     name: "category",

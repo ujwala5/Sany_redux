@@ -3,9 +3,12 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { addDealers } from '../../../features/dealers/dealersSlice';
 
 function AddDealers() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
@@ -51,26 +54,29 @@ function AddDealers() {
     onSubmit: async (values) => {
       console.log("values==>>", values);
 
-      const result = await fetch("http://localhost:8991/V2/dealers/create", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          Dealername: values.dealerName,
-          dealerCode: values.dealerCode,
-          Contactno: values.contactNumber,
-          Country: values.country,
-          State: values.state,
-          City: values.city,
-          lat: values.lattitude,
-          long: values.longitude,
-          Zipcode: values.zipcode,
-          Mapadd: values.Address
-        }),
-      })
-      const res = await result.json();
+      // const result = await fetch("http://localhost:8991/V2/dealers/create", {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     Dealername: values.dealerName,
+      //     dealerCode: values.dealerCode,
+      //     Contactno: values.contactNumber,
+      //     Country: values.country,
+      //     State: values.state,
+      //     City: values.city,
+      //     lat: values.lattitude,
+      //     long: values.longitude,
+      //     Zipcode: values.zipcode,
+      //     Mapadd: values.Address
+      //   }),
+      // })
+      // const res = await result.json();
+
+      const res = await dispatch(addDealers(values)).unwrap();
       console.log("res === >>", res);
+
       if (res.code === 200) {
         toast.success("Dealer created Successfully");
         navigate("/ShowDealers")

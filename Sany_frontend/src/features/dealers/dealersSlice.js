@@ -13,6 +13,29 @@ export const deleteDealers = createAsyncThunk('dealer/deleteDealers', async (dea
     return dealerId;
 })
 
+export const addDealers = createAsyncThunk('dealer/addDealers', async (values) => {
+    const response = await axios.post('http://localhost:8991/V2/dealers/create', {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        Dealername: values.dealerName,
+        dealerCode: values.dealerCode,
+        Contactno: values.contactNumber,
+        Country: values.country,
+        State: values.state,
+        City: values.city,
+        lat: values.lattitude,
+        long: values.longitude,
+        Zipcode: values.zipcode,
+        Mapadd: values.Address
+    });
+
+    console.log("response ===>>", response);
+    return response.data;
+})
+
+
+
 export const dealerSlice = createSlice({
     name: "dealer",
     initialState: {
@@ -55,6 +78,19 @@ export const dealerSlice = createSlice({
             .addCase(deleteDealers.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+
+            //Add dealer
+            .addCase(addDealers.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(addDealers.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(addDealers.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
             })
 
     }

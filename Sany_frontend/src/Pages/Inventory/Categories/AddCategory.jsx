@@ -20,27 +20,15 @@ function AddCategory() {
 
     onSubmit: async (values) => {
       console.log("values==>>", values);
-      // const result = await fetch('http://localhost:8991/v2/categories/create', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     Categoryname: values.categoryName,
-
-      //   }),
-
-      // })
-
-      const result = dispatch(addCategory(values.categoryName)).unwrap();
-      console.log("result ===>", result)
+  
+      const res = await dispatch(addCategory(values.categoryName)).unwrap();
 
       // const res = await result.json();
-      // console.log("res==>>", res);
+      console.log("res==>>", res);
 
-      // if (res.code === 200) {
-      //   navigate('/showCategories');
-      // }
+      if (res.code === 200) {
+        navigate('/showCategories');
+      }
     }
   })
 

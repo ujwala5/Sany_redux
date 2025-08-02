@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addSubCategories } from '../../../features/subCategory/subCategorySlice';
 
 function AddSubCategories() {
 
   const [categories, setCategories] = useState([]);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
@@ -22,21 +25,26 @@ function AddSubCategories() {
 
     onSubmit: async (values) => {
       console.log("values==>", values)
-      let result = await fetch('http://localhost:8991/v2/subcategories/create', {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          Categoryname: values.category,
-          SubCategoryname: values.subCategoryName
+      // let result = await fetch('http://localhost:8991/v2/subcategories/create', {
+      //   method: "POST",
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     Categoryname: values.category,
+      //     SubCategoryname: values.subCategoryName
 
-        }),
-      })
+      //   }),
+      // })
 
-      const response = await result.json()
-      console.log("response==", response);
-      if (response.code === 200) {
+      // const response = await result.json()
+      // console.log("response==", response);
+
+
+      const res = await dispatch(addSubCategories(values)).unwrap();
+      console.log("res==>>", res);
+
+      if (res.code === 200) {
         navigate('/ShowSubCategories');
       }
     },

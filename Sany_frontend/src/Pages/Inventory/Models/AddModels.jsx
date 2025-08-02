@@ -9,6 +9,8 @@ import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { addModels } from '../../../features/model/modelSlice';
 
 
 
@@ -17,6 +19,7 @@ function AddModels() {
   const [subcategories, setSubategories] = useState([]);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
@@ -40,23 +43,25 @@ function AddModels() {
       try {
         console.log("values==>", values);
 
-        const res = await fetch("http://localhost:8991/V2/models/create", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            Subcatname: values.Subcategory,
-            Modelcode: values.ModelCode,
-            Modeldesc: values.modelDescription,
-            Brochureurl: values.BrochureUrl
-          }),
-        })
+        // const res = await fetch("http://localhost:8991/V2/models/create", {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //   },
+        //   body: JSON.stringify({
+        //     Subcatname: values.Subcategory,
+        //     Modelcode: values.ModelCode,
+        //     Modeldesc: values.modelDescription,
+        //     Brochureurl: values.BrochureUrl
+        //   }),
+        // })
 
-        const response = await res.json();
-        console.log("response =>", response);
+        // const response = await res.json();
+        // console.log("response =>", response);
 
-        if (response.code == 200) {
+        const res = await dispatch(addModels(values)).unwrap();
+
+        if (res.code == 200) {
           toast.success("Model created successfully")
           navigate('/ShowModels')
         } else {

@@ -104,7 +104,7 @@ function EditCategory() {
                             />
                         </div>
                         <button type="submit" className="btn btn-primary">
-                            Add
+                            Update
                         </button>
                         <button
                             type="button"

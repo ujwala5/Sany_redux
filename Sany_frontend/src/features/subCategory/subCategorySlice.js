@@ -14,14 +14,45 @@ export const deleteSubCategories = createAsyncThunk('subcategory/deleteSubCatego
     return SubCategoryId;
 })
 
+export const addSubCategories = createAsyncThunk('subcategory/addSubCategories', async (values) => {
+    console.log("addSubCategories values ==>>", values);
+
+    const response = await axios.post('http://localhost:8991/v2/subcategories/create', {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+
+        Categoryname: values.category,
+        SubCategoryname: values.subCategoryName
+
+
+    })
+    console.log("addSubCategories response ==>", response);
+    return response.data;
+})
+
 export const subCategoriesSlice = createSlice({
     name: 'subcategory',
     initialState: {
         subCategory: [],
         loading: false,
-        error: null
+        error: null,
+        subcategoryName: '',
+        categoryName: ''
     },
     reducer: {
+
+        getSubCategoryByIdReducer: (state, action) => {
+            const id = action.payload;
+
+            const found = state.subCategory.find(item => item.subcatid == id);
+            if (found) {
+                state.subcategoryName = item.subcatname;
+                state.categoryName = item.catname;
+            } else {
+                state.subcategoryName = ""; // clear if not found
+            }
+        }
 
     },
     extraReducers: (builder) => {
@@ -54,9 +85,23 @@ export const subCategoriesSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message;
             })
+
+            //add sub categories
+            .addCase(addSubCategories.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(addSubCategories.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(addSubCategories.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
     }
 
 
 })
 
+export const { getSubCategoryByIdReducer } = subCategoriesSlice.actions;
 export default subCategoriesSlice.reducer;

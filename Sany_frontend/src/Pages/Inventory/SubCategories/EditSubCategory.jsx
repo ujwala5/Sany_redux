@@ -2,13 +2,18 @@ import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
+import getSubCategoryByIdReducer from '../../../features/subCategory/subCategorySlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function EditSubCategory() {
     const [categories, setCategories] = useState([]);
 
+    const { subcategoryName, categoryName } = useSelector((state) => state.subCategory)
+
     const { subCatId } = useParams();
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const formik = useFormik({
         initialValues: {
@@ -45,41 +50,44 @@ function EditSubCategory() {
     })
 
     const fetchSubCategorybyId = async (subCatId) => {
-        const res = await fetch(`http://localhost:8991/V2/subCategory/${subCatId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
+        // const res = await fetch(`http://localhost:8991/V2/subCategory/${subCatId}`, {
+        //     method: 'GET',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     }
+        // })
 
-        let response = await res.json();
-        console.log("response==>>", response);
+        dispatch(getSubCategoryByIdReducer(subCatId));
 
-        formik.setFieldValue("category", localStorage.getItem("catName"));
-        formik.setFieldValue("subCategoryName", response.data[0].subcatname);
 
     }
 
     useEffect(() => {
         fetchSubCategorybyId(subCatId);
-    }, [])
-
-
-    const fetchCategoryName = async () => {
-        const res = await fetch('http://localhost:8991/v2/categories', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-        const result = await res.json();
-        console.log("result==>", result.data);
-        setCategories(result.data);
-    }
+        // dispatch(getSubCategoryByIdReducer(subCatId));
+    }, [dispatch, subCatId])
 
     useEffect(() => {
-        fetchCategoryName();
-    }, [])
+        formik.setFieldValue("category", categoryName);
+        formik.setFieldValue("subCategoryName", subcategoryName);
+
+    }, [categoryName, subcategoryName])
+
+    // const fetchCategoryName = async () => {
+    //     const res = await fetch('http://localhost:8991/v2/categories', {
+    //         method: 'GET',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         }
+    //     })
+    //     const result = await res.json();
+    //     console.log("result==>", result.data);
+    //     setCategories(result.data);
+    // }
+
+    // useEffect(() => {
+    //     fetchCategoryName();
+    // }, [])
 
 
     const handleCancel = async () => {
