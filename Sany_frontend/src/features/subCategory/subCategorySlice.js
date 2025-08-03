@@ -40,15 +40,16 @@ export const subCategoriesSlice = createSlice({
         subcategoryName: '',
         categoryName: ''
     },
-    reducer: {
+    reducers: {
 
         getSubCategoryByIdReducer: (state, action) => {
             const id = action.payload;
 
             const found = state.subCategory.find(item => item.subcatid == id);
+            console.log("found ===>>", found);
             if (found) {
-                state.subcategoryName = item.subcatname;
-                state.categoryName = item.catname;
+                state.subcategoryName = found.subcatname;
+                state.categoryName = found.catname;
             } else {
                 state.subcategoryName = ""; // clear if not found
             }

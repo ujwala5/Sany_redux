@@ -37,6 +37,10 @@ export const modelSlice = createSlice({
     },
     reducers: {
 
+        getModelByIdReducer: (state, action) => {
+
+        }
+
     },
     extraReducers: (builder) => {
         builder
@@ -82,6 +86,9 @@ export const modelSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message;
             })
+
+        //Update model
+
     }
 })
 
